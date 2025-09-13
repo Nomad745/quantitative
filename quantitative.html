@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量化投资策略演示 - 金融初学者指南</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 主色调系统 */
+            --primary-color: #1F3B8A;
+            --primary-light: #3B5998;
+            --primary-dark: #152B5F;
+            --accent-color: #FF6B35;
+            --accent-light: #FF8A5B;
+            --accent-dark: #E55A2B;
+            
+            /* 文字颜色 */
+            --text-primary: #2C3E50;
+            --text-secondary: #5A6C7D;
+            --text-light: #8A9BA8;
+            --text-white: #FFFFFF;
+            --text-white-80: rgba(255, 255, 255, 0.8);
+            --text-white-60: rgba(255, 255, 255, 0.6);
+            
+            /* 玻璃拟态背景 */
+            --glass-bg-primary: rgba(255, 255, 255, 0.08);
+            --glass-bg-secondary: rgba(255, 255, 255, 0.12);
+            --glass-bg-hover: rgba(255, 255, 255, 0.18);
+            --glass-bg-tooltip: rgba(30, 41, 59, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-border-hover: rgba(255, 255, 255, 0.3);
+            
+            /* 阴影系统 */
+            --glass-shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --glass-shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.12);
+            --glass-shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --glass-shadow-hover: 0 25px 80px rgba(0, 0, 0, 0.2);
+            
+            /* 间距系统 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 40px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Roboto', 'Poppins', 'Noto Sans', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            min-height: 100vh;
+            color: var(--text-white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        /* 玻璃拟态基础组件 */
+        .glass-container {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg-primary);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--glass-shadow-medium);
+            padding: var(--spacing-xxl);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .glass-card {
+            background: var(--glass-bg-primary);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-3px);
+            background: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+            box-shadow: var(--glass-shadow-hover);
+        }
+
+        .glass-button {
+            background: rgba(255, 107, 53, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--glass-shadow-soft);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 107, 53, 0.25);
+            border-color: rgba(255, 107, 53, 0.6);
+            transform: translateY(-2px);
+            box-shadow: var(--glass-shadow-hover);
+        }
+
+        .glass-button.secondary {
+            background: var(--glass-bg-secondary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .glass-button.secondary:hover {
+            background: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        /* 策略选择器样式 */
+        .strategy-selector {
+            display: flex;
+            justify-content: center;
+            margin: var(--spacing-xl) 0;
+            background: var(--glass-bg-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: var(--spacing-sm);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .strategy-tab {
+            flex: 1;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: transparent;
+            border: none;
+            color: var(--text-white-80);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .strategy-tab:hover {
+            background: var(--glass-bg-secondary);
+            color: var(--text-white);
+        }
+
+        .strategy-tab.active {
+            background: var(--accent-color);
+            color: var(--text-white);
+            box-shadow: var(--glass-shadow-soft);
+        }
+
+        /* 策略详情容器 */
+        .strategy-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: var(--spacing-xl);
+            margin: var(--spacing-xl) 0;
+            min-height: 600px;
+        }
+
+        .strategy-explanation {
+            background: var(--glass-bg-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .interactive-chart-area {
+            background: var(--glass-bg-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 响应式网格 - 保留用于其他区域 */
+        .responsive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xxl);
+        }
+
+        /* 标题样式 */
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-white);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--text-white);
+            margin-bottom: var(--spacing-md);
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-white);
+            margin-bottom: var(--spacing-md);
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-white);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 300;
+            color: var(--text-white-80);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* 高亮框 */
+        .highlight-box {
+            background: rgba(255, 107, 53, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 16px;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+            box-shadow: var(--glass-shadow-soft);
+            position: relative;
+        }
+
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05), rgba(255, 138, 91, 0.05));
+            border-radius: 16px;
+            z-index: -1;
+        }
+
+        /* 图表容器 - 扩大尺寸 */
+        .chart-container {
+            background: var(--glass-bg-secondary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md) 0;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        /* 参数调节面板 */
+        .parameter-panel {
+            background: var(--glass-bg-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .parameter-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .parameter-label {
+            display: block;
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .parameter-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--glass-bg-secondary);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .parameter-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: var(--glass-shadow-soft);
+        }
+
+        .parameter-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            border: none;
+            box-shadow: var(--glass-shadow-soft);
+        }
+
+        .parameter-value {
+            color: var(--text-white-80);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        /* 策略卡片特殊样式 */
+        .strategy-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strategy-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            color: var(--accent-color);
+        }
+
+        .strategy-metaphor {
+            background: rgba(59, 89, 152, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(59, 89, 152, 0.3);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            font-style: italic;
+            color: var(--text-white-80);
+        }
+
+        /* 数据展示 */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-label {
+            color: var(--text-white-60);
+            font-size: 14px;
+        }
+
+        .data-value {
+            color: var(--text-white);
+            font-weight: 600;
+        }
+
+        .profit {
+            color: #22c55e;
+        }
+
+        .loss {
+            color: #ef4444;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 { font-size: 32px; }
+            h2 { font-size: 28px; }
+            h3 { font-size: 20px; }
+
+            .glass-container {
+                margin: var(--spacing-sm);
+                padding: var(--spacing-lg);
+            }
+
+            .responsive-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .strategy-detail-container {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+                min-height: auto;
+            }
+
+            .strategy-selector {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+
+            .strategy-tab {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 14px;
+            }
+
+            .chart-container {
+                height: 350px;
+            }
+
+            .parameter-panel {
+                margin: var(--spacing-md) 0;
+                padding: var(--spacing-md);
+            }
+
+            .welcome-tooltip {
+                max-width: 90%;
+                padding: var(--spacing-lg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+
+            .strategy-tab {
+                font-size: 12px;
+                padding: var(--spacing-sm);
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+
+            .parameter-slider {
+                height: 8px;
+            }
+
+            .parameter-slider::-webkit-slider-thumb {
+                width: 24px;
+                height: 24px;
+            }
+
+            .welcome-tooltip {
+                padding: var(--spacing-md);
+            }
+
+            .welcome-tooltip h3 {
+                font-size: 18px;
+            }
+
+            .welcome-tooltip p, .welcome-tooltip li {
+                font-size: 14px;
+            }
+        }
+
+        /* 导航栏 */
+        .glass-navbar {
+            background: var(--glass-bg-secondary);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: var(--spacing-md) var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .nav-item {
+            color: var(--text-white-80);
+            text-decoration: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--glass-bg-hover);
+            color: var(--accent-color);
+        }
+
+        /* 折线图样式 */
+        .simple-chart {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding: var(--spacing-md);
+        }
+
+        .line-chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .price-line {
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .buy-point {
+            fill: #22c55e;
+            stroke: #ffffff;
+            stroke-width: 2;
+            r: 4;
+        }
+
+        .sell-point {
+            fill: #ef4444;
+            stroke: #ffffff;
+            stroke-width: 2;
+            r: 4;
+        }
+
+        .chart-grid {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
+        }
+
+        .chart-axis {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 1;
+        }
+
+        .chart-label {
+            fill: var(--text-white-60);
+            font-size: 12px;
+            text-anchor: middle;
+        }
+
+        .chart-legend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--glass-bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 12px;
+            color: var(--text-white-80);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 2px 0;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .legend-buy {
+            background: #22c55e;
+        }
+
+        .legend-sell {
+            background: #ef4444;
+        }
+
+        /* 交互按钮 */
+        .interactive-demo {
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .demo-result {
+            background: var(--glass-bg-secondary);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+            display: none;
+        }
+
+        .demo-result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 风险提示 */
+        .risk-warning {
+            background: rgba(239, 68, 68, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            color: var(--text-white-80);
+        }
+
+        .risk-warning::before {
+            content: "⚠️ ";
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* 术语解释样式 */
+        .term-tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--accent-color);
+            cursor: help;
+            color: var(--accent-color);
+        }
+
+        .term-tooltip .tooltip-content {
+            visibility: hidden;
+            width: 250px;
+            background: var(--glass-bg-tooltip);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            color: #f1f5f9;
+            font-weight: 500;
+            line-height: 1.5;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .term-tooltip .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(30, 41, 59, 0.95) transparent transparent transparent;
+        }
+
+        .term-tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 策略内容区域 */
+        .strategy-content {
+            display: none;
+        }
+
+        .strategy-content.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+
+        /* 欢迎提示 */
+        .welcome-tooltip {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg-primary);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: var(--spacing-xl);
+            max-width: 400px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: var(--glass-shadow-strong);
+            animation: welcomeSlideIn 0.5s ease;
+        }
+
+        .welcome-tooltip.hidden {
+            display: none;
+        }
+
+        @keyframes welcomeSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .welcome-overlay.hidden {
+            display: none;
+        }
+
+        /* 脉动动画 */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="glass-navbar">
+        <div class="nav-brand">量化投资学院</div>
+        <div class="nav-links">
+            <a href="#strategies" class="nav-item">策略演示</a>
+            <a href="#learning" class="nav-item">学习路径</a>
+            <a href="#certification" class="nav-item">专业认证</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 主标题 -->
+        <div class="glass-container">
+            <h1>量化投资策略演示</h1>
+            <p style="text-align: center; font-size: 18px; color: var(--text-white-80);">
+                开启您的量化投资之旅
+            </p>
+        </div>
+
+        <!-- 策略选择器 -->
+        <div class="strategy-selector">
+            <button class="strategy-tab active" data-strategy="grid">
+                📊 网格策略
+            </button>
+            <button class="strategy-tab" data-strategy="ma">
+                📈 均线策略
+            </button>
+            <button class="strategy-tab" data-strategy="momentum">
+                🚀 动量策略
+            </button>
+        </div>
+
+        <!-- 策略详情容器 -->
+        <div id="strategies" class="strategy-detail-container">
+            <!-- 策略说明区域 -->
+            <div class="strategy-explanation">
+                <!-- 网格策略内容 -->
+                <div class="strategy-content active" id="grid-content">
+                    <div class="strategy-icon" style="font-size: 64px; text-align: center; margin-bottom: var(--spacing-lg);">📊</div>
+                    <h3>超市购物策略（网格策略）</h3>
+
+                    <div class="strategy-metaphor">
+                        <strong>🛒 生活比喻：</strong>就像聪明的超市购物者，当商品打折时多买一些囤货，当价格恢复正常时卖出一部分获利。我们设定多个价格点，像搭建一个"购物网格"，低价买入，高价卖出。
+                    </div>
+
+                    <h4>📋 策略原理</h4>
+                    <p>网格策略是一种<span class="term-tooltip">量化交易<span class="tooltip-content">使用数学模型和计算机程序进行投资决策的方法</span></span>策略，通过在不同价格水平设置买卖订单，形成一个"网格"。当价格下跌时自动买入，价格上涨时自动卖出，从价格波动中获利。</p>
+
+                    <h4>✅ 适用场景</h4>
+                    <ul style="color: var(--text-white-80); margin-left: 20px;">
+                        <li>震荡行情：价格在一定范围内波动</li>
+                        <li>流动性好的市场：容易买卖</li>
+                        <li>波动率适中：不会出现极端价格变化</li>
+                    </ul>
+
+                    <div class="risk-warning">
+                        适用于震荡市场，但在单边上涨或下跌时可能错失机会或面临损失。建议设置止损点。
+                    </div>
+                </div>
+
+                <!-- 移动平均线策略内容 -->
+                <div class="strategy-content" id="ma-content">
+                    <div class="strategy-icon" style="font-size: 64px; text-align: center; margin-bottom: var(--spacing-lg);">📈</div>
+                    <h3>跟随潮流策略（移动平均线策略）</h3>
+
+                    <div class="strategy-metaphor">
+                        <strong>🌊 生活比喻：</strong>就像观察人群的流向来判断哪里最热闹。短期人流（5日均线）和长期人流（20日均线）的交汇点告诉我们趋势变化。当短期人流超过长期人流时，说明这里越来越热闹，我们跟上；反之则离开。
+                    </div>
+
+                    <h4>📋 策略原理</h4>
+                    <p><span class="term-tooltip">移动平均线<span class="tooltip-content">一定时期内价格的平均值，能够平滑价格波动，显示趋势方向</span></span>策略通过观察不同周期均线的交叉来判断买卖时机。当短期均线向上穿越长期均线时产生<span class="term-tooltip">金叉<span class="tooltip-content">短期均线从下方向上穿越长期均线，通常被视为买入信号</span></span>买入信号，反之产生<span class="term-tooltip">死叉<span class="tooltip-content">短期均线从上方向下穿越长期均线，通常被视为卖出信号</span></span>卖出信号。</p>
+
+                    <h4>✅ 适用场景</h4>
+                    <ul style="color: var(--text-white-80); margin-left: 20px;">
+                        <li>趋势性行情：价格有明确的上涨或下跌趋势</li>
+                        <li>中长期投资：适合持有周期较长的投资</li>
+                        <li>大盘股：流动性好，趋势相对稳定</li>
+                    </ul>
+
+                    <div class="risk-warning">
+                        在震荡市场中容易产生虚假信号，建议结合<span class="term-tooltip">RSI<span class="tooltip-content">相对强弱指数，用于判断股票是否超买或超卖</span></span>等其他技术指标使用。
+                    </div>
+                </div>
+
+                <!-- 动量策略内容 -->
+                <div class="strategy-content" id="momentum-content">
+                    <div class="strategy-icon" style="font-size: 64px; text-align: center; margin-bottom: var(--spacing-lg);">🚀</div>
+                    <h3>追赶公交策略（动量策略）</h3>
+
+                    <div class="strategy-metaphor">
+                        <strong>🚌 生活比喻：</strong>就像看到公交车正在加速驶来时赶紧跑过去上车。当股价表现出强劲上涨动量时跟进买入，就像追赶正在加速的公交车。当动量减弱时及时下车，避免坐过站。这体现了"强者恒强"的投资哲学。
+                    </div>
+
+                    <h4>📋 策略原理</h4>
+                    <p>动量策略基于<span class="term-tooltip">动量效应<span class="tooltip-content">股价在一段时间内的涨跌趋势会延续的现象</span></span>，认为价格变化具有惯性。通过识别价格加速上涨的股票并及时跟进，在动量减弱前退出。常用<span class="term-tooltip">RSI指标<span class="tooltip-content">相对强弱指数，数值0-100，通常70以上为超买，30以下为超卖</span></span>和<span class="term-tooltip">MACD<span class="tooltip-content">移动平均收敛发散指标，用于判断趋势变化和买卖时机</span></span>等技术指标来判断动量强弱。</p>
+
+                    <h4>✅ 适用场景</h4>
+                    <ul style="color: var(--text-white-80); margin-left: 20px;">
+                        <li>牛市行情：整体市场向上，动量效应明显</li>
+                        <li>成长股：业绩快速增长，容易形成上涨动量</li>
+                        <li>短期交易：适合持有周期较短的投资</li>
+                        <li>高波动市场：价格变化幅度大，动量明显</li>
+                    </ul>
+
+                    <div class="risk-warning">
+                        高风险高收益策略，需要严格的<span class="term-tooltip">止损<span class="tooltip-content">当投资损失达到预设比例时强制卖出，控制风险</span></span>纪律和<span class="term-tooltip">仓位管理<span class="tooltip-content">合理分配资金，不把所有资金投入单一投资</span></span>。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交互式图表区域 -->
+            <div class="interactive-chart-area">
+                <div class="chart-container">
+                    <div class="simple-chart" id="mainChart">
+                        <!-- 主图表将通过JavaScript生成 -->
+                    </div>
+                </div>
+
+                <!-- 参数调节面板 -->
+                <div class="parameter-panel" id="parameterPanel">
+                    <!-- 参数控件将通过JavaScript动态生成 -->
+                </div>
+
+                <!-- 实时结果展示 -->
+                <div class="demo-result show" id="liveResult">
+                    <h4 id="resultTitle">📊 策略表现</h4>
+                    <div id="resultContent">
+                        <div class="data-row">
+                            <span class="data-label">当前策略</span>
+                            <span class="data-value" id="currentStrategy">网格策略</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">模拟收益</span>
+                            <span class="data-value profit" id="simulatedReturn">+8.5%</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">交易次数</span>
+                            <span class="data-value" id="tradeCount">5次</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">胜率</span>
+                            <span class="data-value" id="winRate">80%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 策略对比分析 -->
+        <div class="glass-container">
+            <h2>策略对比分析</h2>
+            <div class="chart-container" style="height: 400px;">
+                <div id="comparisonChart" class="simple-chart">
+                    <!-- 对比图表 -->
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>💡 投资智慧</h4>
+                <p>没有完美的策略，只有适合的策略。成功的量化投资需要：</p>
+                <ul style="color: var(--text-white-80); margin-left: 20px;">
+                    <li>深入理解市场机制和投资理论</li>
+                    <li>掌握统计学和数据分析方法</li>
+                    <li>具备风险管理和资产配置知识</li>
+                    <li>持续学习和策略优化能力</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 学习路径 -->
+        <div id="learning" class="glass-container">
+            <h2>专业学习路径</h2>
+            <p>量化投资背后蕴含着深厚的金融理论基础，包括：</p>
+
+            <div class="responsive-grid" style="margin-top: 20px;">
+                <div class="glass-card">
+                    <h4>📚 现代投资组合理论</h4>
+                    <p>由诺贝尔奖得主马科维茨提出，通过数学模型优化风险与收益的关系。</p>
+                </div>
+
+                <div class="glass-card">
+                    <h4>📊 资本资产定价模型(CAPM)</h4>
+                    <p>描述风险资产预期收益率与系统性风险之间关系的重要模型。</p>
+                </div>
+
+                <div class="glass-card">
+                    <h4>🔍 行为金融学</h4>
+                    <p>研究投资者心理偏差对市场价格影响，为量化策略提供理论支撑。</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>🎯 为什么需要系统性学习？</h4>
+                <p>量化投资不仅仅是编程和数据分析，更需要深厚的金融理论基础。专业的金融分析师认证（如CFA）提供了完整的知识体系，包括：</p>
+                <ul style="color: var(--text-white-80); margin-left: 20px; margin-top: 10px;">
+                    <li><strong>投资分析框架：</strong>从宏观经济到微观企业的全方位分析方法</li>
+                    <li><strong>风险管理体系：</strong>识别、测量和管理各类投资风险</li>
+                    <li><strong>资产配置理论：</strong>构建最优投资组合的科学方法</li>
+                    <li><strong>衍生品定价：</strong>期权、期货等复杂金融工具的定价模型</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 专业认证信息 -->
+        <div id="certification" class="glass-container">
+            <h2>迈向专业投资分析师</h2>
+            <p>如果您对量化投资产生了浓厚兴趣，建议考虑系统性的专业学习：</p>
+
+            <div class="responsive-grid" style="margin-top: 20px;">
+                <div class="glass-card">
+                    <h4>🏆 CFA特许金融分析师</h4>
+                    <p>全球投资业最严格、含金量最高的资格认证，涵盖投资分析、资产管理、投资组合管理等核心领域。</p>
+                    <div style="margin-top: 15px;">
+                        <span class="data-label">考试层级：</span>
+                        <span class="data-value">三级递进式考试</span>
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <span class="data-label">知识体系：</span>
+                        <span class="data-value">10大知识领域</span>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h4>📈 量化分析专业技能</h4>
+                    <p>掌握Python、R等编程语言，学习机器学习在金融中的应用，构建自己的量化交易系统。</p>
+                    <div style="margin-top: 15px;">
+                        <span class="data-label">核心技能：</span>
+                        <span class="data-value">编程 + 金融 + 数学</span>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h4>🌟 职业发展路径</h4>
+                    <p>量化分析师、投资组合经理、风险管理专家等高薪职位等待着具备专业知识的人才。</p>
+                    <div style="margin-top: 15px;">
+                        <span class="data-label">平均薪资：</span>
+                        <span class="data-value profit">30-100万/年</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-demo">
+                <a href="#" class="glass-button" onclick="showLearningPlan()">获取个性化学习计划</a>
+                <a href="#" class="glass-button secondary">了解更多专业认证</a>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="glass-container" style="text-align: center; margin-top: 40px;">
+            <p style="color: var(--text-white-60);">
+                © 2025 量化投资学院 | 专业金融教育 | 助力职业发展
+            </p>
+            <p style="color: var(--text-white-60); font-size: 14px; margin-top: 10px;">
+                本演示仅供教育目的，投资有风险，入市需谨慎
+            </p>
+        </div>
+    </div>
+
+    <!-- 欢迎提示 -->
+    <div class="welcome-overlay" id="welcomeOverlay"></div>
+    <div class="welcome-tooltip" id="welcomeTooltip">
+        <h3 style="margin-bottom: 20px;">🎉 欢迎来到量化投资学院！</h3>
+        <p style="margin-bottom: 20px; color: var(--text-white-80);">
+            这是一个交互式的量化投资策略演示平台。您可以：
+        </p>
+        <ul style="text-align: left; color: var(--text-white-80); margin-bottom: 20px;">
+            <li>🔄 点击标签页切换不同策略</li>
+            <li>🎛️ 调节参数观察效果变化</li>
+            <li>▶️ 使用自动播放功能</li>
+            <li>📊 查看实时策略表现</li>
+        </ul>
+        <button class="glass-button" onclick="closeWelcome()">开始探索</button>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentStrategy = 'grid';
+        let currentParameters = {
+            grid: { gridSpacing: 5, gridLevels: 5 },
+            ma: { shortPeriod: 5, longPeriod: 12 },
+            momentum: { rsiThreshold: 70, stopLoss: 5 }
+        };
+
+        // 策略切换功能
+        function switchStrategy(strategyType) {
+            try {
+                // 更新标签页状态
+                document.querySelectorAll('.strategy-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                const targetTab = document.querySelector(`[data-strategy="${strategyType}"]`);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                }
+
+                // 更新内容显示
+                document.querySelectorAll('.strategy-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                const targetContent = document.getElementById(`${strategyType}-content`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+
+                // 更新当前策略
+                currentStrategy = strategyType;
+
+                // 更新图表和参数面板
+                updateChart();
+                updateParameterPanel();
+                updateResults();
+            } catch (error) {
+                console.error('策略切换错误:', error);
+            }
+        }
+
+        // 生成图表数据，包含买卖点信息
+        function generateChartData(type, params = {}) {
+            const baseParams = currentParameters[type] || {};
+            const mergedParams = { ...baseParams, ...params };
+
+            switch(type) {
+                case 'grid':
+                    return generateGridStrategyData(mergedParams);
+
+                case 'ma':
+                    return generateMAStrategyData(mergedParams);
+
+                case 'momentum':
+                    return generateMomentumStrategyData(mergedParams);
+
+                default:
+                    return { prices: [], buyPoints: [], sellPoints: [], color: '#FF6B35' };
+            }
+        }
+
+        // 策略数据生成函数
+        function generateGridStrategyData(params) {
+            const gridSpacing = params.gridSpacing || 5;
+            const gridLevels = params.gridLevels || 5;
+            const basePrice = 100;
+
+            // 动态生成价格数据，确保能触及当前参数的网格线
+            const gridPrices = [
+                basePrice,                        // 0: 起始价格
+                basePrice - gridSpacing,          // 1: 触及下网格线 - 买入
+                basePrice - gridSpacing * 1.5,   // 2: 更低价格 - 买入
+                basePrice - gridSpacing,          // 3: 回升到网格线
+                basePrice,                        // 4: 回到基准
+                basePrice + gridSpacing,          // 5: 触及上网格线 - 卖出
+                basePrice + gridSpacing * 1.5,   // 6: 更高价格 - 卖出
+                basePrice + gridSpacing,          // 7: 回落到网格线
+                basePrice,                        // 8: 回到基准
+                basePrice - gridSpacing,          // 9: 再次触及下网格线 - 买入
+                basePrice                         // 10: 回到基准
+            ];
+
+            // 根据网格层数动态计算网格范围
+            const minPrice = basePrice - (gridLevels * gridSpacing / 2);
+            const maxPrice = basePrice + (gridLevels * gridSpacing / 2);
+
+            // 生成网格线价格
+            const gridLines = generateGridLines(minPrice, maxPrice, gridSpacing);
+
+            // 根据网格线精确计算买卖点
+            const buyPoints = [];
+            const sellPoints = [];
+
+            gridPrices.forEach((price, index) => {
+                // 检查价格是否触及网格线
+                gridLines.forEach(gridLine => {
+                    if (Math.abs(price - gridLine) < 0.01) { // 精确匹配网格线
+                        if (gridLine < basePrice) {
+                            // 低于基准价的网格线 - 买入信号
+                            buyPoints.push(index);
+                        } else if (gridLine > basePrice) {
+                            // 高于基准价的网格线 - 卖出信号
+                            sellPoints.push(index);
+                        }
+                    }
+                });
+            });
+
+
+
+            return {
+                prices: gridPrices.map((price, index) => ({
+                    x: index,
+                    y: price,
+                    label: `第${index + 1}天`
+                })),
+                buyPoints: buyPoints.length > 0 ? buyPoints : [1, 2, 8],
+                sellPoints: sellPoints.length > 0 ? sellPoints : [4, 5],
+                color: '#FF6B35',
+                gridLines: gridLines
+            };
+        }
+
+        function generateMAStrategyData(params) {
+            // 重新设计价格数据，确保产生明显的金叉和死叉
+            const maPrices = [
+                // 前期下跌，建立长期均线基础 (8个点)
+                140, 135, 130, 125, 120, 115, 110, 105,
+                // 触底反弹，产生金叉 (4个点)
+                108, 115, 125, 140,
+                // 继续上涨 (2个点)
+                155, 170,
+                // 明显回调，产生死叉 (4个点)
+                160, 145, 125, 100
+            ];
+            const shortPeriod = params.shortPeriod || 5;
+            const longPeriod = params.longPeriod || 12;
+
+            const shortMA = calculateMA(maPrices, shortPeriod);
+            const longMA = calculateMA(maPrices, longPeriod);
+
+
+
+            // 根据均线交叉动态计算买卖点
+            const buyPoints = [];
+            const sellPoints = [];
+
+            for (let i = 1; i < shortMA.length; i++) {
+                if (shortMA[i] !== null && longMA[i] !== null && shortMA[i-1] !== null && longMA[i-1] !== null) {
+                    const prevShort = shortMA[i-1];
+                    const prevLong = longMA[i-1];
+                    const currShort = shortMA[i];
+                    const currLong = longMA[i];
+
+                    // 金叉：短期均线从下方穿越长期均线向上
+                    if (prevShort < prevLong && currShort > currLong) {
+                        buyPoints.push(i);
+                    }
+                    // 死叉：短期均线从上方穿越长期均线向下
+                    else if (prevShort > prevLong && currShort < currLong) {
+                        sellPoints.push(i);
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+            return {
+                prices: maPrices.map((price, index) => ({
+                    x: index,
+                    y: price,
+                    label: `第${index + 1}天`
+                })),
+                buyPoints: buyPoints,
+                sellPoints: sellPoints,
+                color: '#3B82F6',
+                ma5: shortMA,
+                ma20: longMA
+            };
+        }
+
+        function generateMomentumStrategyData(params) {
+            // 精心设计价格数据，突出止损比例的敏感性
+            const momentumPrices = [
+                // 初始震荡，RSI在中性区域 (6个点)
+                100, 101, 99, 102, 100, 103,
+                // 强势上涨，RSI突破阈值 (3个点)
+                108, 118, 130,
+                // 到达高点 (1个点)
+                140,
+                // 精心设计的回调序列，测试不同止损比例 (8个点)
+                136,  // 第11天：-2.9% (4%止损不触发)
+                132,  // 第12天：-5.7% (4%止损触发)
+                128,  // 第13天：-8.6% (6%止损触发)
+                124,  // 第14天：-11.4% (8%止损触发)
+                120,  // 第15天：-14.3%
+                116,  // 第16天：-17.1%
+                112,  // 第17天：-20.0%
+                108   // 第18天：-22.9%
+            ];
+            const rsiValues = calculateRSI(momentumPrices);
+            const rsiThreshold = params.rsiThreshold || 70;
+            const stopLoss = params.stopLoss || 5;
+
+
+
+            // 根据RSI阈值动态计算买卖点
+            const buyPoints = [];
+            const sellPoints = [];
+            let position = null; // 记录持仓状态 {index, price}
+
+            for (let i = 1; i < rsiValues.length; i++) {
+                const prevRSI = rsiValues[i - 1];
+                const currentRSI = rsiValues[i];
+
+                // RSI从阈值下方突破到上方 - 买入信号
+                if (prevRSI < rsiThreshold && currentRSI >= rsiThreshold && position === null) {
+                    buyPoints.push(i);
+                    position = {
+                        index: i,
+                        price: momentumPrices[i]
+                    };
+                }
+                // 如果已有持仓，检查卖出条件
+                else if (position !== null) {
+                    const currentPrice = momentumPrices[i];
+                    const priceChange = ((currentPrice - position.price) / position.price) * 100;
+
+                    console.log(`第${i}天持仓检查: 买入价=${position.price}, 当前价=${currentPrice}, 变化=${priceChange.toFixed(2)}%, 止损线=${-stopLoss}%, RSI=${currentRSI.toFixed(2)}`);
+
+                    // 卖出条件：RSI回落到阈值以下，或触及止损/止盈
+                    const stopProfitThreshold = stopLoss * 3; // 止盈阈值是止损的3倍
+                    if (currentRSI < rsiThreshold || priceChange <= -stopLoss || priceChange >= stopProfitThreshold) {
+                        const reason = currentRSI < rsiThreshold ? 'RSI回落' :
+                                     priceChange <= -stopLoss ? '触及止损' : '触及止盈';
+                        console.log(`🔴 第${i}天卖出: ${reason}, 价格变化=${priceChange.toFixed(2)}%`);
+                        sellPoints.push(i);
+                        position = null;
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+            return {
+                prices: momentumPrices.map((price, index) => ({
+                    x: index,
+                    y: price,
+                    label: `第${index + 1}天`
+                })),
+                buyPoints: buyPoints,
+                sellPoints: sellPoints,
+                color: '#10B981',
+                rsi: rsiValues,
+                threshold: rsiThreshold
+            };
+        }
+
+        // 辅助函数
+        function generateGridLines(min, max, spacing) {
+            const lines = [];
+            for (let price = min; price <= max; price += spacing) {
+                lines.push(price);
+            }
+            return lines;
+        }
+
+        function calculateMA(prices, period) {
+            const ma = [];
+            for (let i = 0; i < prices.length; i++) {
+                if (i < period - 1) {
+                    ma.push(null);
+                } else {
+                    const sum = prices.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
+                    ma.push(sum / period);
+                }
+            }
+            return ma;
+        }
+
+        function calculateRSI(prices, period = 14) {
+            const rsi = [];
+
+            for (let i = 0; i < prices.length; i++) {
+                if (i < period) {
+                    // 对于前期数据，使用简化计算
+                    if (i === 0) {
+                        rsi.push(50);
+                    } else {
+                        // 基于价格变化趋势给出初始RSI值
+                        const priceChange = prices[i] - prices[0];
+                        const changePercent = (priceChange / prices[0]) * 100;
+                        rsi.push(Math.max(0, Math.min(100, 50 + changePercent * 2)));
+                    }
+                } else {
+                    // 标准RSI计算
+                    const recentPrices = prices.slice(i - period, i + 1);
+                    const gains = [];
+                    const losses = [];
+
+                    for (let j = 1; j < recentPrices.length; j++) {
+                        const change = recentPrices[j] - recentPrices[j - 1];
+                        if (change > 0) gains.push(change);
+                        else if (change < 0) losses.push(Math.abs(change));
+                    }
+
+                    const avgGain = gains.length ? gains.reduce((a, b) => a + b, 0) / gains.length : 0;
+                    const avgLoss = losses.length ? losses.reduce((a, b) => a + b, 0) / losses.length : 0;
+
+                    if (avgLoss === 0) {
+                        rsi.push(100);
+                    } else {
+                        const rs = avgGain / avgLoss;
+                        rsi.push(100 - (100 / (1 + rs)));
+                    }
+                }
+            }
+
+            return rsi;
+        }
+
+        // 更新图表
+        function updateChart() {
+            const chartData = generateChartData(currentStrategy, currentParameters[currentStrategy]);
+            drawAdvancedChart('mainChart', chartData);
+        }
+
+        // 绘制高级图表
+        function drawAdvancedChart(containerId, chartData) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const { prices, buyPoints, sellPoints, color, gridLines, ma5, ma20, rsi } = chartData;
+            if (!prices.length) return;
+
+            container.innerHTML = '';
+
+            // 创建SVG元素
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('class', 'line-chart-svg');
+            svg.setAttribute('viewBox', '0 0 500 400');
+
+            // 计算数据范围
+            const maxValue = Math.max(...prices.map(d => d.y));
+            const minValue = Math.min(...prices.map(d => d.y));
+            const range = maxValue - minValue || 1;
+            const padding = 50;
+
+            // 绘制背景网格线
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (i * (400 - 2 * padding)) / 5;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('class', 'chart-grid');
+                line.setAttribute('x1', padding);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', 500 - padding);
+                line.setAttribute('y2', y);
+                svg.appendChild(line);
+            }
+
+            // 绘制网格策略的价格网格线
+            if (currentStrategy === 'grid' && gridLines) {
+                gridLines.forEach(price => {
+                    const y = 400 - padding - ((price - minValue) / range) * (400 - 2 * padding);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('stroke', '#FF6B35');
+                    line.setAttribute('stroke-width', '1');
+                    line.setAttribute('stroke-dasharray', '5,5');
+                    line.setAttribute('opacity', '0.5');
+                    line.setAttribute('x1', padding);
+                    line.setAttribute('y1', y);
+                    line.setAttribute('x2', 500 - padding);
+                    line.setAttribute('y2', y);
+                    svg.appendChild(line);
+                });
+            }
+
+            // 绘制移动平均线
+            if (currentStrategy === 'ma' && ma5 && ma20) {
+                // 绘制5日均线
+                let ma5Path = '';
+                ma5.forEach((value, index) => {
+                    if (value !== null) {
+                        const x = padding + (index * (500 - 2 * padding)) / (prices.length - 1);
+                        const y = 400 - padding - ((value - minValue) / range) * (400 - 2 * padding);
+                        if (ma5Path === '') {
+                            ma5Path += `M ${x} ${y}`;
+                        } else {
+                            ma5Path += ` L ${x} ${y}`;
+                        }
+                    }
+                });
+
+                const ma5Line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                ma5Line.setAttribute('d', ma5Path);
+                ma5Line.setAttribute('stroke', '#22c55e');
+                ma5Line.setAttribute('stroke-width', '2');
+                ma5Line.setAttribute('fill', 'none');
+                ma5Line.setAttribute('opacity', '0.8');
+                svg.appendChild(ma5Line);
+
+                // 绘制20日均线
+                let ma20Path = '';
+                ma20.forEach((value, index) => {
+                    if (value !== null) {
+                        const x = padding + (index * (500 - 2 * padding)) / (prices.length - 1);
+                        const y = 400 - padding - ((value - minValue) / range) * (400 - 2 * padding);
+                        if (ma20Path === '') {
+                            ma20Path += `M ${x} ${y}`;
+                        } else {
+                            ma20Path += ` L ${x} ${y}`;
+                        }
+                    }
+                });
+
+                const ma20Line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                ma20Line.setAttribute('d', ma20Path);
+                ma20Line.setAttribute('stroke', '#ef4444');
+                ma20Line.setAttribute('stroke-width', '2');
+                ma20Line.setAttribute('fill', 'none');
+                ma20Line.setAttribute('opacity', '0.8');
+                svg.appendChild(ma20Line);
+            }
+
+            // 绘制动量策略的RSI指标
+            if (currentStrategy === 'momentum' && rsi && chartData.threshold) {
+                // 为RSI创建单独的坐标系统（使用图表右侧区域）
+                const rsiMinValue = 0;
+                const rsiMaxValue = 100;
+                const rsiRange = rsiMaxValue - rsiMinValue;
+
+                // 绘制RSI阈值线
+                const thresholdY = 400 - padding - ((chartData.threshold - rsiMinValue) / rsiRange) * (400 - 2 * padding);
+                const thresholdLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                thresholdLine.setAttribute('stroke', '#ff6b35');
+                thresholdLine.setAttribute('stroke-width', '2');
+                thresholdLine.setAttribute('stroke-dasharray', '8,4');
+                thresholdLine.setAttribute('opacity', '0.7');
+                thresholdLine.setAttribute('x1', padding);
+                thresholdLine.setAttribute('y1', thresholdY);
+                thresholdLine.setAttribute('x2', 500 - padding);
+                thresholdLine.setAttribute('y2', thresholdY);
+                svg.appendChild(thresholdLine);
+
+                // 添加RSI数值刻度标签
+                const rsiScaleValues = [0, 30, 50, 70, 100];
+                rsiScaleValues.forEach(value => {
+                    const y = 400 - padding - ((value - rsiMinValue) / rsiRange) * (400 - 2 * padding);
+
+                    // 绘制刻度线
+                    const scaleLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    scaleLine.setAttribute('stroke', '#666');
+                    scaleLine.setAttribute('stroke-width', '1');
+                    scaleLine.setAttribute('opacity', '0.3');
+                    scaleLine.setAttribute('x1', 500 - padding - 5);
+                    scaleLine.setAttribute('y1', y);
+                    scaleLine.setAttribute('x2', 500 - padding);
+                    scaleLine.setAttribute('y2', y);
+                    svg.appendChild(scaleLine);
+
+                    // 添加数值标签
+                    const scaleLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    scaleLabel.setAttribute('x', 500 - padding + 8);
+                    scaleLabel.setAttribute('y', y + 4);
+                    scaleLabel.setAttribute('text-anchor', 'start');
+                    scaleLabel.setAttribute('fill', '#888');
+                    scaleLabel.setAttribute('font-size', '10');
+                    scaleLabel.textContent = value;
+                    svg.appendChild(scaleLabel);
+                });
+
+                // 添加RSI阈值标签
+                const thresholdLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                thresholdLabel.setAttribute('x', 500 - padding - 10);
+                thresholdLabel.setAttribute('y', thresholdY - 5);
+                thresholdLabel.setAttribute('text-anchor', 'end');
+                thresholdLabel.setAttribute('fill', '#ff6b35');
+                thresholdLabel.setAttribute('font-size', '12');
+                thresholdLabel.setAttribute('font-weight', 'bold');
+                thresholdLabel.textContent = `RSI ${chartData.threshold}`;
+                svg.appendChild(thresholdLabel);
+
+                // 绘制RSI指标线
+                let rsiPath = '';
+                rsi.forEach((value, index) => {
+                    if (value !== null && value !== undefined) {
+                        const x = padding + (index * (500 - 2 * padding)) / (prices.length - 1);
+                        // 使用RSI坐标系统
+                        const y = 400 - padding - ((value - rsiMinValue) / rsiRange) * (400 - 2 * padding);
+                        if (rsiPath === '') {
+                            rsiPath += `M ${x} ${y}`;
+                        } else {
+                            rsiPath += ` L ${x} ${y}`;
+                        }
+                    }
+                });
+
+                if (rsiPath) {
+                    const rsiLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    rsiLine.setAttribute('d', rsiPath);
+                    rsiLine.setAttribute('stroke', '#9333ea');
+                    rsiLine.setAttribute('stroke-width', '2');
+                    rsiLine.setAttribute('fill', 'none');
+                    rsiLine.setAttribute('opacity', '0.6');
+                    rsiLine.setAttribute('stroke-dasharray', '4,2');
+                    svg.appendChild(rsiLine);
+                }
+
+                // 添加RSI刻度标签
+                const rsiScaleLabels = [0, 30, 50, 70, 100];
+                rsiScaleLabels.forEach(value => {
+                    const y = 400 - padding - ((value - rsiMinValue) / rsiRange) * (400 - 2 * padding);
+                    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    label.setAttribute('x', padding - 5);
+                    label.setAttribute('y', y + 3);
+                    label.setAttribute('text-anchor', 'end');
+                    label.setAttribute('fill', '#9333ea');
+                    label.setAttribute('font-size', '10');
+                    label.setAttribute('opacity', '0.7');
+                    label.textContent = value;
+                    svg.appendChild(label);
+                });
+            }
+
+            // 生成主价格线路径
+            let pathData = '';
+            prices.forEach((point, index) => {
+                const x = padding + (index * (500 - 2 * padding)) / (prices.length - 1);
+                const y = 400 - padding - ((point.y - minValue) / range) * (400 - 2 * padding);
+
+                if (index === 0) {
+                    pathData += `M ${x} ${y}`;
+                } else {
+                    pathData += ` L ${x} ${y}`;
+                }
+            });
+
+            // 绘制主价格线
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('class', 'price-line');
+            path.setAttribute('d', pathData);
+            path.setAttribute('stroke', color);
+            path.setAttribute('stroke-width', '3');
+            svg.appendChild(path);
+
+            // 绘制买入点
+            buyPoints.forEach(pointIndex => {
+                if (pointIndex < prices.length) {
+                    const point = prices[pointIndex];
+                    const x = padding + (pointIndex * (500 - 2 * padding)) / (prices.length - 1);
+                    const y = 400 - padding - ((point.y - minValue) / range) * (400 - 2 * padding);
+
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('class', 'buy-point');
+                    circle.setAttribute('cx', x);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', 6);
+
+                    // 添加悬停提示
+                    const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                    title.textContent = `买入: ¥${point.y} (${point.label})`;
+                    circle.appendChild(title);
+
+                    svg.appendChild(circle);
+
+                    // 添加买入标签
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x);
+                    text.setAttribute('y', y - 15);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#22c55e');
+                    text.setAttribute('font-size', '12');
+                    text.setAttribute('font-weight', 'bold');
+                    text.textContent = '买';
+                    svg.appendChild(text);
+                }
+            });
+
+            // 绘制卖出点
+            sellPoints.forEach(pointIndex => {
+                if (pointIndex < prices.length) {
+                    const point = prices[pointIndex];
+                    const x = padding + (pointIndex * (500 - 2 * padding)) / (prices.length - 1);
+                    const y = 400 - padding - ((point.y - minValue) / range) * (400 - 2 * padding);
+
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('class', 'sell-point');
+                    circle.setAttribute('cx', x);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', 6);
+
+                    // 添加悬停提示
+                    const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                    title.textContent = `卖出: ¥${point.y} (${point.label})`;
+                    circle.appendChild(title);
+
+                    svg.appendChild(circle);
+
+                    // 添加卖出标签
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x);
+                    text.setAttribute('y', y - 15);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#ef4444');
+                    text.setAttribute('font-size', '12');
+                    text.setAttribute('font-weight', 'bold');
+                    text.textContent = '卖';
+                    svg.appendChild(text);
+                }
+            });
+
+            // 添加Y轴标签
+            for (let i = 0; i <= 5; i++) {
+                const value = minValue + (range * i) / 5;
+                const y = 400 - padding - (i * (400 - 2 * padding)) / 5;
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('class', 'chart-label');
+                text.setAttribute('x', padding - 10);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'end');
+                text.textContent = `¥${Math.round(value)}`;
+                svg.appendChild(text);
+            }
+
+            // 添加X轴标签
+            for (let i = 0; i < prices.length; i += 2) {
+                const x = padding + (i * (500 - 2 * padding)) / (prices.length - 1);
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('class', 'chart-label');
+                text.setAttribute('x', x);
+                text.setAttribute('y', 400 - padding + 20);
+                text.setAttribute('text-anchor', 'middle');
+                text.textContent = `第${i + 1}天`;
+                svg.appendChild(text);
+            }
+
+            container.appendChild(svg);
+
+            // 添加动态图例
+            const legend = document.createElement('div');
+            legend.className = 'chart-legend';
+
+            let legendContent = `
+                <div class="legend-item">
+                    <div class="legend-dot legend-buy"></div>
+                    <span>买入点</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot legend-sell"></div>
+                    <span>卖出点</span>
+                </div>
+            `;
+
+            if (currentStrategy === 'ma') {
+                const shortPeriod = currentParameters.ma.shortPeriod;
+                const longPeriod = currentParameters.ma.longPeriod;
+                legendContent += `
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #22c55e;"></div>
+                        <span>${shortPeriod}日均线</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #ef4444;"></div>
+                        <span>${longPeriod}日均线</span>
+                    </div>
+                `;
+            } else if (currentStrategy === 'grid') {
+                legendContent += `
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #FF6B35; opacity: 0.5;"></div>
+                        <span>网格线</span>
+                    </div>
+                `;
+            } else if (currentStrategy === 'momentum') {
+                legendContent += `
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #9333ea; opacity: 0.6;"></div>
+                        <span>RSI指标</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #ff6b35; opacity: 0.7;"></div>
+                        <span>RSI阈值线</span>
+                    </div>
+                `;
+            }
+
+            legend.innerHTML = legendContent;
+            container.appendChild(legend);
+        }
+
+        // 更新参数面板
+        function updateParameterPanel() {
+            const panel = document.getElementById('parameterPanel');
+            if (!panel) return;
+
+            let panelContent = '<h4 style="margin-bottom: 15px; color: var(--text-white);">📊 策略参数调节</h4>';
+
+            switch (currentStrategy) {
+                case 'grid':
+                    panelContent += `
+                        <div class="parameter-group">
+                            <label class="parameter-label">网格间距 (¥)</label>
+                            <input type="range" class="parameter-slider" min="3" max="7" step="1" value="${currentParameters.grid.gridSpacing}"
+                                   oninput="updateParameter('grid', 'gridSpacing', this.value)">
+                            <div class="parameter-value">当前值: ¥${currentParameters.grid.gridSpacing}</div>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label">网格层数</label>
+                            <input type="range" class="parameter-slider" min="4" max="7" step="1" value="${currentParameters.grid.gridLevels}"
+                                   oninput="updateParameter('grid', 'gridLevels', this.value)">
+                            <div class="parameter-value">当前值: ${currentParameters.grid.gridLevels}层</div>
+                        </div>
+                    `;
+                    break;
+                case 'ma':
+                    panelContent += `
+                        <div class="parameter-group">
+                            <label class="parameter-label">短期均线周期</label>
+                            <input type="range" class="parameter-slider" min="3" max="7" step="1" value="${currentParameters.ma.shortPeriod}"
+                                   oninput="updateParameter('ma', 'shortPeriod', this.value)">
+                            <div class="parameter-value">当前值: ${currentParameters.ma.shortPeriod}日</div>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label">长期均线周期</label>
+                            <input type="range" class="parameter-slider" min="10" max="14" step="1" value="${currentParameters.ma.longPeriod}"
+                                   oninput="updateParameter('ma', 'longPeriod', this.value)">
+                            <div class="parameter-value">当前值: ${currentParameters.ma.longPeriod}日</div>
+                        </div>
+                    `;
+                    break;
+                case 'momentum':
+                    panelContent += `
+                        <div class="parameter-group">
+                            <label class="parameter-label">RSI阈值</label>
+                            <input type="range" class="parameter-slider" min="65" max="75" step="2" value="${currentParameters.momentum.rsiThreshold}"
+                                   oninput="updateParameter('momentum', 'rsiThreshold', this.value)">
+                            <div class="parameter-value">当前值: ${currentParameters.momentum.rsiThreshold}</div>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label">止损比例 (%)</label>
+                            <input type="range" class="parameter-slider" min="4" max="8" step="1" value="${currentParameters.momentum.stopLoss}"
+                                   oninput="updateParameter('momentum', 'stopLoss', this.value)">
+                            <div class="parameter-value">当前值: ${currentParameters.momentum.stopLoss}%</div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            panel.innerHTML = panelContent;
+        }
+
+        // 防抖定时器
+        let updateDebounceTimer = null;
+
+        // 更新参数
+        function updateParameter(strategy, param, value) {
+            const numValue = parseFloat(value);
+
+            // 参数范围验证
+            let validatedValue = numValue;
+            if (strategy === 'grid') {
+                if (param === 'gridSpacing') {
+                    validatedValue = Math.max(3, Math.min(7, numValue));
+                } else if (param === 'gridLevels') {
+                    validatedValue = Math.max(4, Math.min(7, numValue));
+                }
+            } else if (strategy === 'ma') {
+                if (param === 'shortPeriod') {
+                    validatedValue = Math.max(3, Math.min(7, numValue));
+                } else if (param === 'longPeriod') {
+                    validatedValue = Math.max(10, Math.min(14, numValue));
+                    // 确保长期均线周期大于短期均线周期
+                    validatedValue = Math.max(validatedValue, currentParameters.ma.shortPeriod + 3);
+                }
+            } else if (strategy === 'momentum') {
+                if (param === 'rsiThreshold') {
+                    validatedValue = Math.max(65, Math.min(75, numValue));
+                } else if (param === 'stopLoss') {
+                    validatedValue = Math.max(4, Math.min(8, numValue));
+                }
+            }
+
+            // 更新参数值
+            currentParameters[strategy][param] = validatedValue;
+
+            // 立即更新参数显示（不需要防抖）
+            updateParameterDisplay(strategy, param, validatedValue);
+
+            // 防抖更新图表和结果（避免频繁重绘）
+            clearTimeout(updateDebounceTimer);
+            updateDebounceTimer = setTimeout(() => {
+                updateChart();
+                updateResults();
+            }, 100); // 100ms 防抖延迟
+        }
+
+        // 更新参数显示值（不重新生成整个面板）
+        function updateParameterDisplay(strategy, param, value) {
+            const parameterValueElements = document.querySelectorAll('.parameter-value');
+            parameterValueElements.forEach(element => {
+                const text = element.textContent;
+                if (strategy === 'grid') {
+                    if (param === 'gridSpacing' && text.includes('当前值: ¥')) {
+                        element.textContent = `当前值: ¥${value}`;
+                    } else if (param === 'gridLevels' && text.includes('层')) {
+                        element.textContent = `当前值: ${value}层`;
+                    }
+                } else if (strategy === 'ma') {
+                    if (param === 'shortPeriod' && text.includes('日') && !text.includes('20')) {
+                        element.textContent = `当前值: ${value}日`;
+                    } else if (param === 'longPeriod' && text.includes('日') && element.parentElement.querySelector('.parameter-label').textContent.includes('长期')) {
+                        element.textContent = `当前值: ${value}日`;
+                    }
+                } else if (strategy === 'momentum') {
+                    if (param === 'rsiThreshold' && !text.includes('%')) {
+                        element.textContent = `当前值: ${value}`;
+                    } else if (param === 'stopLoss' && text.includes('%')) {
+                        element.textContent = `当前值: ${value}%`;
+                    }
+                }
+            });
+        }
+
+        // 更新结果显示
+        function updateResults() {
+            const strategyNames = {
+                grid: '网格策略',
+                ma: '均线策略',
+                momentum: '动量策略'
+            };
+
+            // 基于当前参数计算实际结果
+            const chartData = generateChartData(currentStrategy, currentParameters[currentStrategy]);
+            const results = calculateStrategyPerformance(chartData, currentStrategy);
+
+            document.getElementById('currentStrategy').textContent = strategyNames[currentStrategy];
+            document.getElementById('simulatedReturn').textContent = `+${results.return.toFixed(1)}%`;
+            document.getElementById('tradeCount').textContent = `${results.trades}次`;
+            document.getElementById('winRate').textContent = `${results.winRate}%`;
+        }
+
+        // 计算策略表现
+        function calculateStrategyPerformance(chartData, strategyType) {
+            const { prices, buyPoints, sellPoints } = chartData;
+            let totalReturn = 0;
+            let totalTrades = 0;
+            let winningTrades = 0;
+            let capital = 10000; // 初始资金
+            let position = 0; // 持仓数量
+            let buyPrice = 0;
+
+            // 模拟交易执行
+            const allTradePoints = [];
+
+            // 合并买卖点并按时间排序
+            buyPoints.forEach(index => {
+                allTradePoints.push({ index, type: 'buy', price: prices[index].y });
+            });
+            sellPoints.forEach(index => {
+                allTradePoints.push({ index, type: 'sell', price: prices[index].y });
+            });
+
+            allTradePoints.sort((a, b) => a.index - b.index);
+
+            // 执行交易
+            allTradePoints.forEach(trade => {
+                if (trade.type === 'buy' && position === 0) {
+                    // 买入
+                    position = Math.floor(capital / trade.price);
+                    buyPrice = trade.price;
+                    capital -= position * trade.price;
+                } else if (trade.type === 'sell' && position > 0) {
+                    // 卖出
+                    const sellValue = position * trade.price;
+                    capital += sellValue;
+
+                    const tradeReturn = ((trade.price - buyPrice) / buyPrice) * 100;
+                    totalReturn += tradeReturn;
+                    totalTrades++;
+
+                    if (tradeReturn > 0) {
+                        winningTrades++;
+                    }
+
+                    position = 0;
+                    buyPrice = 0;
+                }
+            });
+
+            // 如果还有持仓，按最后价格计算
+            if (position > 0) {
+                const lastPrice = prices[prices.length - 1].y;
+                capital += position * lastPrice;
+                const tradeReturn = ((lastPrice - buyPrice) / buyPrice) * 100;
+                totalReturn += tradeReturn;
+                totalTrades++;
+                if (tradeReturn > 0) {
+                    winningTrades++;
+                }
+            }
+
+            // 计算总收益率
+            const finalReturn = ((capital - 10000) / 10000) * 100;
+            const winRate = totalTrades > 0 ? Math.round((winningTrades / totalTrades) * 100) : 0;
+
+            // 根据策略类型调整结果
+            let adjustedReturn = finalReturn;
+            let adjustedTrades = totalTrades;
+
+            if (strategyType === 'grid') {
+                // 网格策略：参数影响交易频率
+                const params = currentParameters.grid;
+                const frequencyMultiplier = (10 - params.gridSpacing) / 5; // 间距越小，交易越频繁
+                adjustedTrades = Math.max(1, Math.round(totalTrades * frequencyMultiplier));
+                adjustedReturn = finalReturn * (params.gridLevels / 5); // 层数影响收益
+            } else if (strategyType === 'ma') {
+                // 均线策略：周期差异影响信号质量
+                const params = currentParameters.ma;
+                const periodDiff = params.longPeriod - params.shortPeriod;
+                const signalQuality = Math.min(periodDiff / 15, 1); // 周期差越大，信号越可靠
+                adjustedReturn = finalReturn * (0.5 + signalQuality * 0.5);
+            } else if (strategyType === 'momentum') {
+                // 动量策略：RSI阈值影响入场时机
+                const params = currentParameters.momentum;
+                const thresholdEffect = (params.rsiThreshold - 60) / 20; // 阈值越高，越保守
+                adjustedReturn = finalReturn * (1 - thresholdEffect * 0.3);
+                const stopLossEffect = params.stopLoss / 10;
+                adjustedReturn *= (1 - stopLossEffect * 0.2); // 止损越严格，收益越保守
+            }
+
+            return {
+                return: Math.max(0, adjustedReturn),
+                trades: Math.max(1, adjustedTrades),
+                winRate: Math.max(0, Math.min(100, winRate))
+            };
+        }
+
+
+
+        // 初始化图表
+        function initCharts() {
+            updateChart();
+            updateParameterPanel();
+            updateResults();
+
+            // 绘制对比图表
+            drawComparisonChart();
+        }
+
+        // 绘制策略对比图表
+        function drawComparisonChart() {
+            const container = document.getElementById('comparisonChart');
+            if (!container) return;
+
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.justifyContent = 'space-around';
+            container.style.alignItems = 'end';
+            container.style.padding = '20px';
+
+            const strategies = [
+                { name: '网格策略', return: 8.5, risk: 'Low', color: '#FF6B35' },
+                { name: '均线策略', return: 15.7, risk: 'Medium', color: '#3B82F6' },
+                { name: '动量策略', return: 12.0, risk: 'High', color: '#10B981' }
+            ];
+
+            strategies.forEach(strategy => {
+                const barContainer = document.createElement('div');
+                barContainer.style.display = 'flex';
+                barContainer.style.flexDirection = 'column';
+                barContainer.style.alignItems = 'center';
+                barContainer.style.margin = '0 10px';
+
+                const bar = document.createElement('div');
+                bar.style.width = '60px';
+                bar.style.height = (strategy.return * 10) + 'px';
+                bar.style.background = `linear-gradient(to top, ${strategy.color}, ${strategy.color}88)`;
+                bar.style.borderRadius = '4px 4px 0 0';
+                bar.style.marginBottom = '10px';
+                bar.style.transition = 'all 0.3s ease';
+                bar.style.cursor = 'pointer';
+
+                const label = document.createElement('div');
+                label.textContent = strategy.name;
+                label.style.color = 'var(--text-white-80)';
+                label.style.fontSize = '12px';
+                label.style.textAlign = 'center';
+                label.style.marginBottom = '5px';
+
+                const returnLabel = document.createElement('div');
+                returnLabel.textContent = `+${strategy.return}%`;
+                returnLabel.style.color = '#22c55e';
+                returnLabel.style.fontSize = '14px';
+                returnLabel.style.fontWeight = '600';
+                returnLabel.style.textAlign = 'center';
+
+                const riskLabel = document.createElement('div');
+                riskLabel.textContent = `风险: ${strategy.risk}`;
+                riskLabel.style.color = 'var(--text-white-60)';
+                riskLabel.style.fontSize = '10px';
+                riskLabel.style.textAlign = 'center';
+
+                bar.addEventListener('mouseenter', () => {
+                    bar.style.transform = 'scaleY(1.1)';
+                    bar.style.filter = 'brightness(1.2)';
+                });
+
+                bar.addEventListener('mouseleave', () => {
+                    bar.style.transform = 'scaleY(1)';
+                    bar.style.filter = 'brightness(1)';
+                });
+
+                barContainer.appendChild(bar);
+                barContainer.appendChild(label);
+                barContainer.appendChild(returnLabel);
+                barContainer.appendChild(riskLabel);
+
+                container.appendChild(barContainer);
+            });
+        }
+
+        // 策略演示函数 - 保留用于兼容性
+        function runGridDemo() {
+            switchStrategy('grid');
+        }
+
+        function runMADemo() {
+            switchStrategy('ma');
+        }
+
+        function runMomentumDemo() {
+            switchStrategy('momentum');
+        }
+
+        // 欢迎提示功能
+        function closeWelcome() {
+            document.getElementById('welcomeOverlay').classList.add('hidden');
+            document.getElementById('welcomeTooltip').classList.add('hidden');
+
+            // 添加脉动效果到策略选择器
+            document.querySelector('.strategy-selector').classList.add('pulse');
+            setTimeout(() => {
+                document.querySelector('.strategy-selector').classList.remove('pulse');
+            }, 4000);
+        }
+
+        function showLearningPlan() {
+            alert('🎓 个性化学习计划\n\n基础阶段（1-3个月）：\n• 金融市场基础知识\n• 投资学原理\n• 统计学基础\n\n进阶阶段（4-8个月）：\n• CFA Level I 学习\n• Python编程基础\n• 量化分析方法\n\n专业阶段（9-18个月）：\n• CFA Level II & III\n• 高级量化策略\n• 实盘交易经验\n\n💡 建议从CFA认证开始，建立扎实的理论基础！');
+        }
+
+        // 平滑滚动到指定区域
+        function smoothScroll(targetId) {
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+
+            // 添加策略切换事件监听器
+            document.querySelectorAll('.strategy-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const strategy = this.getAttribute('data-strategy');
+                    switchStrategy(strategy);
+                });
+            });
+
+            // 为导航链接添加平滑滚动
+            document.querySelectorAll('.nav-item').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    smoothScroll(targetId);
+                });
+            });
+
+            // 添加滚动动画效果
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // 观察所有卡片元素
+            document.querySelectorAll('.glass-card, .glass-container').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // 延迟显示第一个容器
+            setTimeout(() => {
+                const firstContainer = document.querySelector('.glass-container');
+                if (firstContainer) {
+                    firstContainer.style.opacity = '1';
+                    firstContainer.style.transform = 'translateY(0)';
+                }
+            }, 300);
+
+            // 显示页面加载完成提示
+            setTimeout(() => {
+                console.log('🎉 量化投资演示页面加载完成！');
+                console.log('💡 提示：您可以点击不同的策略标签页来探索各种投资策略');
+            }, 1000);
+        });
+
+        // 添加轻微的交互效果
+        document.addEventListener('mouseenter', function(e) {
+            if (e.target.classList.contains('glass-card')) {
+                e.target.style.transform = 'translateY(-3px)';
+                e.target.style.borderColor = 'var(--glass-border-hover)';
+            }
+        }, true);
+
+        document.addEventListener('mouseleave', function(e) {
+            if (e.target.classList.contains('glass-card')) {
+                e.target.style.transform = '';
+                e.target.style.borderColor = 'var(--glass-border)';
+            }
+        }, true);
+    </script>
+</body>
+</html>
